@@ -20,23 +20,27 @@ enum GameState {
 
 function shuffleDeck(deck: string[]): string[] {
     // create copy of passed-in array
-    const shuffledDeck = [...deck];
+    const shuffled = [...deck];
 
     // shuffle array using Fisher-Yates (Knuth) Shuffle
-    let currIndex = shuffledDeck.length;
+    let currIndex = shuffled.length;
     while (currIndex != 0) {
         const randomIndex = Math.floor(Math.random() * currIndex);
         currIndex--;
-        [shuffledDeck[currIndex], shuffledDeck[randomIndex]] = [shuffledDeck[randomIndex], shuffledDeck[currIndex]];
+        [shuffled[currIndex], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[currIndex]];
     }
 
-    return shuffledDeck;
+    return shuffled;
 }
 
-function drawCard(deck: string[]): string | undefined {
+function drawCard(deck: string[]): string {
     // pop card from top of deck (last index = top of deck)
     const card = deck.pop();
-    return card;
+    if (typeof card === "string") {
+        return card;
+    } else {
+        return "NO_MORE_CARDS" // TODO: handle this usecase (very unlikely to get here though)
+    }
 }
 
 export function gameLoop() {
@@ -44,9 +48,10 @@ export function gameLoop() {
     let continueLoop = true;
     let userInput: string | null;
 
-    let playerHand: string[] = [];
-    let dealerHand: string[] = [];
-    let deck: string[] = [...uniqueCards];
+    const playerHand: string[] = [];
+    const dealerHand: string[] = [];
+    const sortedDeck: string[] = [...uniqueCards];
+    const deck: string[] = shuffleDeck(sortedDeck);
 
     while (continueLoop) {
         switch (currState) {
@@ -68,7 +73,11 @@ export function gameLoop() {
                 break;
             case GameState.StartGame:
                 console.log("Starting game...")
-                // TODO: deal one player card, then deal one dealer card face up, then deal another player card, then deal another dealer card face down
+                playerHand.push(drawCard(deck));
+                dealerHand.push(drawCard(deck));
+                playerHand.push(drawCard(deck));
+                dealerHand.push(drawCard(deck)); // TODO: FACE DOWN
+
                 currState = GameState.GetChoice;
                 break;
             case GameState.GetChoice:
@@ -88,17 +97,17 @@ export function gameLoop() {
                 // TODO: deal with null userInput
                 break;
             case GameState.DealPlayerCard:
-                // TODO: deal player card
                 // TODO: if player count > 21, end game
                 // TODO: if player count == 21, go to dealer card
                 console.log("Dealing player card...")
+                playerHand.push(drawCard(deck));
                 currState = GameState.GetChoice;
                 break;
             case GameState.DealDealerCard:
-                // TODO: deal dealer card
                 // TODO: if dealer count < 17, deal another dealer card
                 // TODO: if dealer count >= 17, check winner
                 console.log("Dealing dealer card...")
+                dealerHand.push(drawCard(deck));
                 currState = GameState.CheckWinner;
                 break;
             case GameState.FlipDealerCardUp:
