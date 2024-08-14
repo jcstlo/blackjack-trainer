@@ -1,10 +1,3 @@
-// pseudocode for sample game flow
-// idle
-// -(startGame)> startGame -> myCard -> dealerCardFaceUp -> myCard -> dealerCardFaceDown -> myChoice
-// -(hit...)> myChoice...
-// -(stand)> dealerFlipCardUp
-// -(under 17...)> dealerCardFaceUp...
-// -(17 or more)> checkWhoWins -> endGame -> idle
 import { uniqueCards } from "./Cards";
 
 enum GameState {
@@ -16,6 +9,40 @@ enum GameState {
     DealDealerCard,
     CheckWinner,
     EndGame
+}
+
+function getRankValue(rank: string): number {
+    switch (rank) {
+        // TODO: handle hard/soft counts (e.g. A = 1 or 11)
+        case "A": return 11;
+        case "2": return 2;
+        case "3": return 3;
+        case "4": return 4;
+        case "5": return 5;
+        case "6": return 6;
+        case "7": return 7;
+        case "8": return 8;
+        case "9": return 9;
+        case "10": return 10;
+        case "J": return 10;
+        case "Q": return 10;
+        case "K": return 10;
+        default: return 0; // TODO: throw error
+    }
+}
+
+function extractCardRank(card: string): string {
+    const split = card.split("_");
+    return split[0];
+}
+
+function checkCount(hand: string[]): number {
+    let sum = 0;
+    hand.forEach((card) => {
+        const rank = extractCardRank(card);
+        sum += getRankValue(rank);
+    })
+    return sum;
 }
 
 function shuffleDeck(deck: string[]): string[] {
@@ -52,6 +79,8 @@ export function gameLoop() {
     const dealerHand: string[] = [];
     const sortedDeck: string[] = [...uniqueCards];
     const deck: string[] = shuffleDeck(sortedDeck);
+    let playerCount: number = 0;
+    let dealerCount: number = 0;
 
     while (continueLoop) {
         switch (currState) {
@@ -97,29 +126,58 @@ export function gameLoop() {
                 // TODO: deal with null userInput
                 break;
             case GameState.DealPlayerCard:
-                // TODO: if player count > 21, end game
-                // TODO: if player count == 21, go to dealer card
                 console.log("Dealing player card...")
                 playerHand.push(drawCard(deck));
-                currState = GameState.GetChoice;
+
+                // calculate next state based on current player count
+                playerCount = checkCount(playerHand);
+                if (playerCount > 21) {
+                    currState = GameState.CheckWinner;
+                } else if (playerCount === 21) {
+                    currState = GameState.DealDealerCard;
+                } else {
+                    currState = GameState.GetChoice;
+                }
                 break;
             case GameState.DealDealerCard:
-                // TODO: if dealer count < 17, deal another dealer card
-                // TODO: if dealer count >= 17, check winner
                 console.log("Dealing dealer card...")
                 dealerHand.push(drawCard(deck));
-                currState = GameState.CheckWinner;
+
+                // calculate next state based on current dealer count
+                dealerCount = checkCount(dealerHand);
+                if (dealerCount >= 17) {
+                    currState = GameState.CheckWinner;
+                } else {
+                    currState = GameState.DealDealerCard;
+                }
                 break;
             case GameState.FlipDealerCardUp:
                 // TODO: flip dealer card up
-                // TODO: if dealer count < 17, deal another dealer card
-                // TODO: if dealer count >= 17, check winner
                 console.log("Flipping dealer card up...")
-                currState = GameState.DealDealerCard;
+                dealerCount = checkCount(dealerHand);
+                if (dealerCount >= 17) {
+                    currState = GameState.CheckWinner;
+                } else {
+                    currState = GameState.DealDealerCard;
+                }
                 break;
             case GameState.CheckWinner:
-                // TODO: check winner
                 console.log("Checking who won...")
+                playerCount = checkCount(playerHand);
+                dealerCount = checkCount(dealerHand);
+
+                if (playerCount > 21) {
+                    console.log("Dealer wins due to player bust!");
+                } else if (dealerCount > 21) {
+                    console.log("Player wins due to dealer bust!");
+                } else if (playerCount > dealerCount) {
+                    console.log("Player wins!");
+                } else if (playerCount < dealerCount) {
+                    console.log("Dealer wins!");
+                } else {
+                    console.log("Push!");
+                }
+
                 currState = GameState.EndGame;
                 break;
             case GameState.EndGame:
@@ -130,5 +188,11 @@ export function gameLoop() {
                 console.log("Invalid game state!")
                 break;
         }
+        playerCount = checkCount(playerHand);
+        dealerCount = checkCount(dealerHand);
+        console.log(`playerHand = ${playerHand}`)
+        console.log(`playerCount = ${playerCount}`)
+        console.log(`dealerHand = ${dealerHand}`)
+        console.log(`dealerCount = ${dealerCount}`)
     }
 }
