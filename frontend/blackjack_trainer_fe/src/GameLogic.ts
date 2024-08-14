@@ -5,6 +5,7 @@
 // -(stand)> dealerFlipCardUp
 // -(under 17...)> dealerCardFaceUp...
 // -(17 or more)> checkWhoWins -> endGame -> idle
+import { uniqueCards } from "./Cards";
 
 enum GameState {
     Idle,
@@ -17,10 +18,35 @@ enum GameState {
     EndGame
 }
 
+function shuffleDeck(deck: string[]): string[] {
+    // create copy of passed-in array
+    const shuffledDeck = [...deck];
+
+    // shuffle array using Fisher-Yates (Knuth) Shuffle
+    let currIndex = shuffledDeck.length;
+    while (currIndex != 0) {
+        const randomIndex = Math.floor(Math.random() * currIndex);
+        currIndex--;
+        [shuffledDeck[currIndex], shuffledDeck[randomIndex]] = [shuffledDeck[randomIndex], shuffledDeck[currIndex]];
+    }
+
+    return shuffledDeck;
+}
+
+function drawCard(deck: string[]): string | undefined {
+    // pop card from top of deck (last index = top of deck)
+    const card = deck.pop();
+    return card;
+}
+
 export function gameLoop() {
     let currState = GameState.Idle;
     let continueLoop = true;
     let userInput: string | null;
+
+    let playerHand: string[] = [];
+    let dealerHand: string[] = [];
+    let deck: string[] = [...uniqueCards];
 
     while (continueLoop) {
         switch (currState) {
