@@ -1,6 +1,6 @@
 import { uniqueCards } from "./Cards";
 
-enum GameState {
+export enum GameState {
     Idle,
     StartGame,
     GetChoice,
