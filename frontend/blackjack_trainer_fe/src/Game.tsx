@@ -1,3 +1,5 @@
+import Actions from './Actions'
+import { DealerHand, PlayerHand } from './Hands'
 import { useState } from "react"
 import { GameState } from "./GameLogic"
 
@@ -8,11 +10,16 @@ function Game() {
 
     return (
         <>
-        {/*
-            <DealerHand/>
-            <PlayerHand/>
-            <Actions/>
-        */}
+            <DealerHand hand={dealerHand}/>
+            <PlayerHand hand={playerHand}/>
+            <Actions
+              gameState={gameState}
+              gameStateSetter={setGameState}
+              dealerHand={dealerHand}
+              dealerHandSetter={setDealerHand}
+              playerHand={playerHand}
+              playerHandSetter={setPlayerHand}
+            />
         </>
     )
 }

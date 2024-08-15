@@ -1,15 +1,12 @@
-import Actions from './Actions'
+import Game from './Game'
 import { gameLoop } from './GameLogic'
-import { DealerHand, PlayerHand } from './Hands'
 
 function App() {
   // gameLoop();
 
   return (
     <>
-      <DealerHand/>
-      <PlayerHand/>
-      <Actions/>
+      <Game/>
     </>
   )
 }

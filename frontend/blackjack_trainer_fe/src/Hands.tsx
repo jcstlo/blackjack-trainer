@@ -1,6 +1,9 @@
-export function DealerHand() {
-    const TEMPORARY_ARRAY: string[] = ["a", "b", "c"];
-    const cards = TEMPORARY_ARRAY.map((card: string) => {
+interface HandProps {
+    hand: string[];
+}
+
+export function DealerHand(props: HandProps) {
+    const cards = props.hand.map((card: string) => {
         return <li>{card}</li>;
     })
 
@@ -14,9 +17,8 @@ export function DealerHand() {
     )
 }
 
-export function PlayerHand() {
-    const TEMPORARY_ARRAY: string[] = ["d", "e", "f"];
-    const cards = TEMPORARY_ARRAY.map((card: string) => {
+export function PlayerHand(props: HandProps) {
+    const cards = props.hand.map((card: string) => {
         return <li>{card}</li>;
     })
 
