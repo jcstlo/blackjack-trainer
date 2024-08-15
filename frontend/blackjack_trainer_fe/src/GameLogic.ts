@@ -36,7 +36,7 @@ function extractCardRank(card: string): string {
     return split[0];
 }
 
-function checkCount(hand: string[]): number {
+export function checkCount(hand: string[]): number {
     let sum = 0;
     hand.forEach((card) => {
         const rank = extractCardRank(card);
@@ -45,7 +45,7 @@ function checkCount(hand: string[]): number {
     return sum;
 }
 
-function shuffleDeck(deck: string[]): string[] {
+export function shuffleDeck(deck: string[]): string[] {
     // create copy of passed-in array
     const shuffled = [...deck];
 
@@ -60,7 +60,7 @@ function shuffleDeck(deck: string[]): string[] {
     return shuffled;
 }
 
-function drawCard(deck: string[]): string {
+export function drawCard(deck: string[]): string {
     // pop card from top of deck (last index = top of deck)
     const card = deck.pop();
     if (typeof card === "string") {
