@@ -1,6 +1,7 @@
-import { checkCount, drawCard, GameState } from "./GameLogic"
+import { drawCard, GameState } from "./GameLogic"
 import { uniqueCards } from "./Cards";
 import { shuffleDeck } from "./GameLogic";
+import { calculateHandCount, HandCount } from "./HandCount";
 
 interface ActionProps {
     gameState: GameState;
@@ -18,22 +19,16 @@ function Actions(props: ActionProps) {
     let buttons: JSX.Element;
     if (props.gameState === GameState.GetChoice) {
         buttons = (<>
-            <button
-              onClick={HitHandler}
-            >
+            <button onClick={HitHandler}>
               Hit
             </button>
-            <button
-              onClick={StandHandler}
-            >
+            <button onClick={StandHandler}>
               Stand
             </button>
         </>);
     } else {
         buttons = (<>
-            <button
-              onClick={NewGameHandler}
-            >
+            <button onClick={NewGameHandler}>
               New Game
             </button>
         </>);
@@ -46,35 +41,63 @@ function Actions(props: ActionProps) {
     )
 
     // ------------ Convenience functions ------------
-    function checkWinner(playerCount: number, dealerCount: number): void {
-        console.log(`playerCount = ${playerCount}`)
-        console.log(`dealerCount = ${dealerCount}`)
-        if (playerCount > 21) {
+    function checkWinner(playerCount: HandCount, dealerCount: HandCount): void {
+        // figure out final hand count
+        let truePlayerCount = 0;
+        let trueDealerCount = 0;
+        if (playerCount.softCount > 21) {
+            truePlayerCount = playerCount.hardCount;
+        } else {
+            truePlayerCount = playerCount.softCount;
+        }
+        if (dealerCount.softCount > 21) {
+            trueDealerCount = dealerCount.hardCount;
+        } else {
+            trueDealerCount = dealerCount.softCount;
+        }
+        console.log(`truePlayerCount = ${truePlayerCount}`)
+        console.log(`trueDealerCount = ${trueDealerCount}`)
+
+        // compare hands
+        if (truePlayerCount > 21) {
             console.log("Dealer wins due to player bust!");
-        } else if (dealerCount > 21) {
+        } else if (trueDealerCount > 21) {
             console.log("Player wins due to dealer bust!");
-        } else if (playerCount > dealerCount) {
+        } else if (truePlayerCount > trueDealerCount) {
             console.log("Player wins!");
-        } else if (playerCount < dealerCount) {
+        } else if (truePlayerCount < trueDealerCount) {
             console.log("Dealer wins!");
         } else {
             console.log("Push!");
         }
     }
 
+    function dealAnotherDealerCard(dealerCount: HandCount): boolean {
+        // for most cases
+        if (dealerCount.softCount < 17) {
+            return true;
+        }
+
+        // for cases such as "4 + K + A" (softCount = 25 but hardCount = 15)
+        if (dealerCount.softCount > 21 && dealerCount.hardCount < 17) {
+            return true;
+        }
+        return false;
+    }
+
     function dealDealerCards(latestPlayerHand: string[]): void {
         const updatedDealerHand = [...props.dealerHand];
         const updatedDeck = [...props.deck];
 
-        // continuously deal cards until dealer hits >= 17
-        let dealerCount = checkCount(updatedDealerHand);
-        while (dealerCount < 17) {
+        // deal dealer cards
+        let dealerCount = calculateHandCount(updatedDealerHand);
+        while (dealAnotherDealerCard(dealerCount)) {
             updatedDealerHand.push(drawCard(updatedDeck));
-            dealerCount = checkCount(updatedDealerHand);
+            dealerCount = calculateHandCount(updatedDealerHand);
         }
 
         // check winner
-        const playerCount = checkCount(latestPlayerHand);
+        const playerCount = calculateHandCount(latestPlayerHand);
         checkWinner(playerCount, dealerCount);
 
         props.dealerHandSetter(updatedDealerHand);
@@ -112,12 +135,12 @@ function Actions(props: ActionProps) {
         updatedPlayerHand.push(drawCard(updatedDeck));
 
         // check if player hit >= 21
-        const playerCount = checkCount(updatedPlayerHand);
-        const dealerCount = checkCount(props.dealerHand);
-        if (playerCount > 21) {
+        const playerCount = calculateHandCount(updatedPlayerHand);
+        const dealerCount = calculateHandCount(props.dealerHand);
+        if (playerCount.hardCount > 21) {
             checkWinner(playerCount, dealerCount);
             props.gameStateSetter(GameState.Idle);
-        } else if (playerCount === 21) {
+        } else if (playerCount.softCount === 21 || playerCount.hardCount === 21) {
             dealDealerCards(updatedPlayerHand);
             props.gameStateSetter(GameState.Idle);
         } else {
