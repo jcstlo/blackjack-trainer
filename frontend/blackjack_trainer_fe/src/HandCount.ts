@@ -22,7 +22,7 @@ function getRankValue(rank: string): number {
     }
 }
 
-function extractCardRank(card: string): string {
+export function extractCardRank(card: string): string {
     const split = card.split("_");
     return split[0];
 }

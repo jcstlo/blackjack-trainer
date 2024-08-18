@@ -2,14 +2,15 @@ import { drawCard, GameState } from "./GameLogic"
 import { uniqueCards } from "./Cards";
 import { shuffleDeck } from "./GameLogic";
 import { calculateHandCount, HandCount } from "./HandCount";
+import { addCardToHand, clonePlayerHands, newPlayerHand, PlayerHands, splitHand } from "./PlayerHands";
 
 interface ActionProps {
     gameState: GameState;
     gameStateSetter: React.Dispatch<React.SetStateAction<GameState>>;
     dealerHand: string[];
     dealerHandSetter: React.Dispatch<React.SetStateAction<string[]>>;
-    playerHand: string[];
-    playerHandSetter: React.Dispatch<React.SetStateAction<string[]>>;
+    playerHands: PlayerHands;
+    playerHandsSetter: React.Dispatch<React.SetStateAction<PlayerHands>>;
     deck: string[];
     deckSetter: React.Dispatch<React.SetStateAction<string[]>>;
 }
@@ -24,6 +25,9 @@ function Actions(props: ActionProps) {
             </button>
             <button onClick={StandHandler}>
               Stand
+            </button>
+            <button onClick={SplitHandler}>
+              Split
             </button>
         </>);
     } else {
@@ -72,6 +76,14 @@ function Actions(props: ActionProps) {
         }
     }
 
+    function checkWinners(playerHands: PlayerHands, dealerCount: HandCount): void {
+        for (let i = 0; i < playerHands.numHands; i++) {
+            console.log(`PLAYER HAND ${i}`);
+            const playerCount = calculateHandCount(playerHands.hands[i]);
+            checkWinner(playerCount, dealerCount);
+        }
+    }
+
     function dealAnotherDealerCard(dealerCount: HandCount): boolean {
         // for most cases
         if (dealerCount.softCount < 17) {
@@ -85,21 +97,34 @@ function Actions(props: ActionProps) {
         return false;
     }
 
-    function dealDealerCards(latestPlayerHand: string[]): void {
+    function playersStillInGame(playerHands: PlayerHands): boolean {
+        for (let i = 0; i < playerHands.numHands; i++) {
+            const hand = playerHands.hands[i];
+            const playerCount = calculateHandCount(hand);
+            if (playerCount.hardCount <= 21) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function dealDealerCards(latestPlayerHands: PlayerHands): void {
         const updatedDealerHand = [...props.dealerHand];
         const updatedDeck = [...props.deck];
 
-        // deal dealer cards
+        // deal dealer cards if there are any player hands that haven't busted
         let dealerCount = calculateHandCount(updatedDealerHand);
-        while (dealAnotherDealerCard(dealerCount)) {
-            updatedDealerHand.push(drawCard(updatedDeck));
-            dealerCount = calculateHandCount(updatedDealerHand);
+        if (playersStillInGame(latestPlayerHands)) {
+            while (dealAnotherDealerCard(dealerCount)) {
+                updatedDealerHand.push(drawCard(updatedDeck));
+                dealerCount = calculateHandCount(updatedDealerHand);
+            }
         }
 
         // check winner
-        const playerCount = calculateHandCount(latestPlayerHand);
-        checkWinner(playerCount, dealerCount);
+        checkWinners(latestPlayerHands, dealerCount);
 
+        // update state
         props.dealerHandSetter(updatedDealerHand);
         props.deckSetter(updatedDeck);
     }
@@ -107,7 +132,7 @@ function Actions(props: ActionProps) {
     // ------------ Handlers ------------
     function NewGameHandler(): undefined {
         // reset player and dealer hands
-        const newPlayerHand: string[] = [];
+        const newPlayerHands = newPlayerHand();
         const newDealerHand: string[] = [];
 
         // shuffle new deck
@@ -115,48 +140,76 @@ function Actions(props: ActionProps) {
         const shuffled: string[] = shuffleDeck(sortedDeck);
 
         // deal first cards
-        newPlayerHand.push(drawCard(shuffled));
+        addCardToHand(newPlayerHands, drawCard(shuffled));
         newDealerHand.push(drawCard(shuffled));
-        newPlayerHand.push(drawCard(shuffled));
-        newDealerHand.push(drawCard(shuffled));
+        addCardToHand(newPlayerHands, drawCard(shuffled));
+        newDealerHand.push(drawCard(shuffled)); // TODO: make this face down
 
         // update state
-        props.playerHandSetter(newPlayerHand);
+        props.playerHandsSetter(newPlayerHands);
         props.dealerHandSetter(newDealerHand);
         props.deckSetter(shuffled);
         props.gameStateSetter(GameState.GetChoice);
     }
 
     function HitHandler(): undefined {
-        const updatedPlayerHand = [...props.playerHand];
+        const updatedPlayerHands = clonePlayerHands(props.playerHands);
         const updatedDeck = [...props.deck];
 
         // deal card to player
-        updatedPlayerHand.push(drawCard(updatedDeck));
+        addCardToHand(updatedPlayerHands, drawCard(updatedDeck));
 
         // check if player hit >= 21
-        const playerCount = calculateHandCount(updatedPlayerHand);
-        const dealerCount = calculateHandCount(props.dealerHand);
+        const playerCount = calculateHandCount(updatedPlayerHands.hands[updatedPlayerHands.focus]);
+
         if (playerCount.hardCount > 21) {
-            checkWinner(playerCount, dealerCount);
-            props.gameStateSetter(GameState.Idle);
+            if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
+                // TODO: deal with corner case where all player hands have busted, so dealer doesn't need to deal
+                dealDealerCards(updatedPlayerHands);
+                props.gameStateSetter(GameState.Idle);
+            } else {
+                updatedPlayerHands.focus += 1;
+            }
         } else if (playerCount.softCount === 21 || playerCount.hardCount === 21) {
-            dealDealerCards(updatedPlayerHand);
-            props.gameStateSetter(GameState.Idle);
+            if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
+                dealDealerCards(updatedPlayerHands);
+                props.gameStateSetter(GameState.Idle);
+            } else {
+                updatedPlayerHands.focus += 1;
+            }
         } else {
             props.gameStateSetter(GameState.GetChoice);
         }
 
         // update state
-        props.playerHandSetter(updatedPlayerHand);
+        props.playerHandsSetter(updatedPlayerHands);
         props.deckSetter(updatedDeck);
     }
 
     function StandHandler(): undefined {
-        dealDealerCards([...props.playerHand]);
+        const updatedPlayerHands = clonePlayerHands(props.playerHands);
+
+        if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
+            dealDealerCards(props.playerHands);
+            props.gameStateSetter(GameState.Idle);
+        } else {
+            updatedPlayerHands.focus += 1;
+            props.gameStateSetter(GameState.GetChoice);
+        }
 
         // update state
-        props.gameStateSetter(GameState.Idle);
+        props.playerHandsSetter(updatedPlayerHands);
+    }
+
+    function SplitHandler(): undefined {
+        const updatedPlayerHands = clonePlayerHands(props.playerHands);
+
+        if (!splitHand(updatedPlayerHands)) {
+            console.log("Split is not possible with these cards!")
+        }
+
+        // update state
+        props.playerHandsSetter(updatedPlayerHands);
     }
 }
 
