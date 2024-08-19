@@ -4,6 +4,7 @@ export enum GameState {
     Idle,
     StartGame,
     GetChoice,
+    GetFirstChoice,
     DealPlayerCard,
     FlipDealerCardUp,
     DealDealerCard,

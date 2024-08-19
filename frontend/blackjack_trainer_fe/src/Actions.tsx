@@ -30,6 +30,21 @@ function Actions(props: ActionProps) {
               Split
             </button>
         </>);
+    } else if (props.gameState === GameState.GetFirstChoice) {
+        buttons = (<>
+            <button onClick={HitHandler}>
+              Hit
+            </button>
+            <button onClick={StandHandler}>
+              Stand
+            </button>
+            <button onClick={SplitHandler}>
+              Split
+            </button>
+            <button onClick={DoubleHandler}>
+              Double
+            </button>
+        </>);
     } else {
         buttons = (<>
             <button onClick={NewGameHandler}>
@@ -149,7 +164,7 @@ function Actions(props: ActionProps) {
         props.playerHandsSetter(newPlayerHands);
         props.dealerHandSetter(newDealerHand);
         props.deckSetter(shuffled);
-        props.gameStateSetter(GameState.GetChoice);
+        props.gameStateSetter(GameState.GetFirstChoice);
     }
 
     function HitHandler(): undefined {
@@ -164,11 +179,11 @@ function Actions(props: ActionProps) {
 
         if (playerCount.hardCount > 21) {
             if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
-                // TODO: deal with corner case where all player hands have busted, so dealer doesn't need to deal
                 dealDealerCards(updatedPlayerHands);
                 props.gameStateSetter(GameState.Idle);
             } else {
                 updatedPlayerHands.focus += 1;
+                props.gameStateSetter(GameState.GetFirstChoice);
             }
         } else if (playerCount.softCount === 21 || playerCount.hardCount === 21) {
             if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
@@ -176,6 +191,7 @@ function Actions(props: ActionProps) {
                 props.gameStateSetter(GameState.Idle);
             } else {
                 updatedPlayerHands.focus += 1;
+                props.gameStateSetter(GameState.GetFirstChoice);
             }
         } else {
             props.gameStateSetter(GameState.GetChoice);
@@ -194,7 +210,7 @@ function Actions(props: ActionProps) {
             props.gameStateSetter(GameState.Idle);
         } else {
             updatedPlayerHands.focus += 1;
-            props.gameStateSetter(GameState.GetChoice);
+            props.gameStateSetter(GameState.GetFirstChoice);
         }
 
         // update state
@@ -210,6 +226,26 @@ function Actions(props: ActionProps) {
 
         // update state
         props.playerHandsSetter(updatedPlayerHands);
+    }
+
+    function DoubleHandler(): undefined {
+        const updatedPlayerHands = clonePlayerHands(props.playerHands);
+        const updatedDeck = [...props.deck];
+
+        // deal card to player
+        addCardToHand(updatedPlayerHands, drawCard(updatedDeck));
+
+        if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
+            dealDealerCards(updatedPlayerHands);
+            props.gameStateSetter(GameState.Idle);
+        } else {
+            updatedPlayerHands.focus += 1;
+            props.gameStateSetter(GameState.GetFirstChoice);
+        }
+
+        // update state
+        props.playerHandsSetter(updatedPlayerHands);
+        props.deckSetter(updatedDeck);
     }
 }
 
