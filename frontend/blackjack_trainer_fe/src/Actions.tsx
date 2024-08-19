@@ -16,48 +16,29 @@ interface ActionProps {
     faceDownSetter: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-
 function Actions(props: ActionProps) {
     let buttons: JSX.Element;
     if (props.gameState === GameState.GetChoice) {
         buttons = (<>
-            <button onClick={HitHandler}>
-              Hit
-            </button>
-            <button onClick={StandHandler}>
-              Stand
-            </button>
-            <button onClick={SplitHandler}>
-              Split
-            </button>
+            <button onClick={HitHandler}>Hit</button>
+            <button onClick={StandHandler}>Stand</button>
+            <button onClick={SplitHandler}>Split</button>
         </>);
     } else if (props.gameState === GameState.GetFirstChoice) {
         buttons = (<>
-            <button onClick={HitHandler}>
-              Hit
-            </button>
-            <button onClick={StandHandler}>
-              Stand
-            </button>
-            <button onClick={SplitHandler}>
-              Split
-            </button>
-            <button onClick={DoubleHandler}>
-              Double
-            </button>
+            <button onClick={HitHandler}>Hit</button>
+            <button onClick={StandHandler}>Stand</button>
+            <button onClick={SplitHandler}>Split</button>
+            <button onClick={DoubleHandler}>Double</button>
         </>);
     } else {
         buttons = (<>
-            <button onClick={NewGameHandler}>
-              New Game
-            </button>
+            <button onClick={NewGameHandler}>New Game</button>
         </>);
     }
 
     return (
-        <>
-            {buttons}
-        </>
+        <>{buttons}</>
     )
 
     // ------------ Convenience functions ------------
@@ -160,7 +141,7 @@ function Actions(props: ActionProps) {
         addCardToHand(newPlayerHands, drawCard(shuffled));
         newDealerHand.push(drawCard(shuffled));
         addCardToHand(newPlayerHands, drawCard(shuffled));
-        newDealerHand.push(drawCard(shuffled)); // TODO: make this face down
+        newDealerHand.push(drawCard(shuffled));
 
         // update state
         props.playerHandsSetter(newPlayerHands);
@@ -177,9 +158,8 @@ function Actions(props: ActionProps) {
         // deal card to player
         addCardToHand(updatedPlayerHands, drawCard(updatedDeck));
 
-        // check if player hit >= 21
+        // figure out next state based on player's current hand
         const playerCount = calculateHandCount(updatedPlayerHands.hands[updatedPlayerHands.focus]);
-
         if (playerCount.hardCount > 21) {
             if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
                 dealDealerCards(updatedPlayerHands);
@@ -208,8 +188,9 @@ function Actions(props: ActionProps) {
     function StandHandler(): undefined {
         const updatedPlayerHands = clonePlayerHands(props.playerHands);
 
+        // move to next hand, or dealer's turn if all player hands are done
         if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
-            dealDealerCards(props.playerHands);
+            dealDealerCards(updatedPlayerHands);
             props.gameStateSetter(GameState.Idle);
         } else {
             updatedPlayerHands.focus += 1;
@@ -238,6 +219,7 @@ function Actions(props: ActionProps) {
         // deal card to player
         addCardToHand(updatedPlayerHands, drawCard(updatedDeck));
 
+        // move to next hand, or dealer's turn if all player hands are done
         if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
             dealDealerCards(updatedPlayerHands);
             props.gameStateSetter(GameState.Idle);
