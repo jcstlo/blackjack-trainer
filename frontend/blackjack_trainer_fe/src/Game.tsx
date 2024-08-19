@@ -10,10 +10,11 @@ function Game() {
     const [playerHands, setPlayerHands] = useState(newPlayerHand());
     const [dealerHand, setDealerHand] = useState([] as string[]);
     const [deck, setDeck] = useState([] as string[]);
+    const [faceDown, setFaceDown] = useState(false);
 
     return (
         <>
-            <DealerHand hand={dealerHand}/>
+            <DealerHand hand={dealerHand} faceDown={faceDown}/>
             <MultiplePlayerHands pHands={playerHands}/>
             <Actions
               gameState={gameState}
@@ -24,6 +25,7 @@ function Game() {
               playerHandsSetter={setPlayerHands}
               deck={deck}
               deckSetter={setDeck}
+              faceDownSetter={setFaceDown}
             />
             <DebugUI gameState={gameState} playerHands={playerHands}/>
         </>

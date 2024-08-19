@@ -1,5 +1,10 @@
 import { PlayerHands } from "./PlayerHands";
 
+interface DealerHandProps {
+    hand: string[];
+    faceDown: boolean;
+}
+
 interface HandProps {
     hand: string[];
 }
@@ -8,10 +13,17 @@ interface MultipleHandsProps {
     pHands: PlayerHands;
 }
 
-export function DealerHand(props: HandProps) {
-    const cards = props.hand.map((card: string) => {
-        return <li>{card}</li>;
-    })
+export function DealerHand(props: DealerHandProps) {
+    let cards: JSX.Element[] = [];
+
+    if (props.faceDown) {
+        cards.push(<li>{props.hand[0]}</li>)
+        cards.push(<li>(face-down)</li>)
+    } else {
+        cards = props.hand.map((card: string) => {
+            return <li>{card}</li>;
+        })
+    }
 
     return (
         <>

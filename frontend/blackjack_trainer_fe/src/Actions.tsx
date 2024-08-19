@@ -13,6 +13,7 @@ interface ActionProps {
     playerHandsSetter: React.Dispatch<React.SetStateAction<PlayerHands>>;
     deck: string[];
     deckSetter: React.Dispatch<React.SetStateAction<string[]>>;
+    faceDownSetter: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 
@@ -140,6 +141,7 @@ function Actions(props: ActionProps) {
         checkWinners(latestPlayerHands, dealerCount);
 
         // update state
+        props.faceDownSetter(false);
         props.dealerHandSetter(updatedDealerHand);
         props.deckSetter(updatedDeck);
     }
@@ -164,6 +166,7 @@ function Actions(props: ActionProps) {
         props.playerHandsSetter(newPlayerHands);
         props.dealerHandSetter(newDealerHand);
         props.deckSetter(shuffled);
+        props.faceDownSetter(true);
         props.gameStateSetter(GameState.GetFirstChoice);
     }
 
