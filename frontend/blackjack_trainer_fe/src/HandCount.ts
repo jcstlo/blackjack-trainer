@@ -3,7 +3,7 @@ export interface HandCount {
     hardCount: number;
 }
 
-function getRankValue(rank: string): number {
+export function getRankValue(rank: string): number {
     switch (rank) {
         case "A": return 1;
         case "2": return 2;

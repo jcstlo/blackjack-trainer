@@ -1,3 +1,4 @@
+import { PlayerCount } from "./Counts";
 import { getCardPath } from "./GameLogic";
 import { PlayerHands } from "./PlayerHands";
 
@@ -18,6 +19,7 @@ export function PlayerHandsVisual(props: PlayerHandsVisualProps) {
             temp.push(<img src={img_path}/>);
         }
 
+        jsx.push(<PlayerCount playerHand={props.pHands.hands[i]}/>)
         jsx.push(<div className="flex">{temp}</div>);
     }
 

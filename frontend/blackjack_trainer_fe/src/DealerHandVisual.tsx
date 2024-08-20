@@ -1,3 +1,4 @@
+import { DealerCount } from "./Counts";
 import { getCardPath } from "./GameLogic";
 
 interface DealerHandVisualProps {
@@ -22,6 +23,7 @@ export function DealerHandVisual(props: DealerHandVisualProps) {
     return (
         <>
             <p className="text-2xl">Dealer hand:</p>
+            <DealerCount dealerHand={props.hand} faceDown={props.faceDown}/>
             <div className="flex">
                 {cards}
             </div>
