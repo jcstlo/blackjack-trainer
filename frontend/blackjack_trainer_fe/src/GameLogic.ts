@@ -28,3 +28,10 @@ export function drawCard(deck: string[]): string {
         return "NO_MORE_CARDS" // TODO: handle this usecase (very unlikely to get here though)
     }
 }
+
+export function getCardPath(card: string): string {
+    // returns "playing_cards/CARD_NAME.png"
+    const path = "playing_cards/"
+    const result = path.concat(card, ".png");
+    return result;
+}

@@ -38,7 +38,7 @@ function Actions(props: ActionProps) {
     }
 
     return (
-        <>{buttons}</>
+        <div>{buttons}</div>
     )
 
     // ------------ Convenience functions ------------
