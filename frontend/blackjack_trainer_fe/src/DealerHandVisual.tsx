@@ -21,8 +21,10 @@ export function DealerHandVisual(props: DealerHandVisualProps) {
 
     return (
         <>
-            <p>Dealer hand:</p>
-            {cards}
+            <p className="text-2xl">Dealer hand:</p>
+            <div className="flex">
+                {cards}
+            </div>
         </>
     )
 }

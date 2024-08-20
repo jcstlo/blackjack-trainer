@@ -20,20 +20,20 @@ function Actions(props: ActionProps) {
     let buttons: JSX.Element;
     if (props.gameState === GameState.GetChoice) {
         buttons = (<>
-            <button onClick={HitHandler}>Hit</button>
-            <button onClick={StandHandler}>Stand</button>
-            <button onClick={SplitHandler}>Split</button>
+            <button className="ml-5 border rounded border-black" onClick={HitHandler}>Hit</button>
+            <button className="ml-5 border rounded border-black" onClick={StandHandler}>Stand</button>
+            <button className="ml-5 border rounded border-black" onClick={SplitHandler}>Split</button>
         </>);
     } else if (props.gameState === GameState.GetFirstChoice) {
         buttons = (<>
-            <button onClick={HitHandler}>Hit</button>
-            <button onClick={StandHandler}>Stand</button>
-            <button onClick={SplitHandler}>Split</button>
-            <button onClick={DoubleHandler}>Double</button>
+            <button className="ml-5 border rounded border-black" onClick={HitHandler}>Hit</button>
+            <button className="ml-5 border rounded border-black" onClick={StandHandler}>Stand</button>
+            <button className="ml-5 border rounded border-black" onClick={SplitHandler}>Split</button>
+            <button className="ml-5 border rounded border-black" onClick={DoubleHandler}>Double</button>
         </>);
     } else {
         buttons = (<>
-            <button onClick={NewGameHandler}>New Game</button>
+            <button className="ml-5 border rounded border-black" onClick={NewGameHandler}>New Game</button>
         </>);
     }
 
