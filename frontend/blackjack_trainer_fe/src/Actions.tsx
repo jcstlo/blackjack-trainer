@@ -57,24 +57,17 @@ function Actions(props: ActionProps) {
         } else {
             trueDealerCount = dealerCount.softCount;
         }
-        console.log(`truePlayerCount = ${truePlayerCount}`)
-        console.log(`trueDealerCount = ${trueDealerCount}`)
 
         // compare hands
         if (truePlayerCount > 21) {
-            console.log("Dealer wins due to player bust!");
             return WinnerState.DealerWinPlayerBust;
         } else if (trueDealerCount > 21) {
-            console.log("Player wins due to dealer bust!");
             return WinnerState.PlayerWinDealerBust;
         } else if (truePlayerCount > trueDealerCount) {
-            console.log("Player wins!");
             return WinnerState.PlayerWin;
         } else if (truePlayerCount < trueDealerCount) {
-            console.log("Dealer wins!");
             return WinnerState.DealerWin;
         } else {
-            console.log("Push!");
             return WinnerState.Push;
         }
     }
@@ -83,7 +76,6 @@ function Actions(props: ActionProps) {
         const winners: WinnerState[] = [];
 
         for (let i = 0; i < playerHands.numHands; i++) {
-            console.log(`PLAYER HAND ${i}`);
             const playerCount = calculateHandCount(playerHands.hands[i]);
             const winner = checkWinner(playerCount, dealerCount);
             winners.push(winner);
