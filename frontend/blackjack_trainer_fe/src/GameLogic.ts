@@ -4,6 +4,14 @@ export enum GameState {
     GetFirstChoice
 }
 
+export enum WinnerState {
+    DealerWinPlayerBust,
+    PlayerWinDealerBust,
+    PlayerWin,
+    DealerWin,
+    Push
+}
+
 export function shuffleDeck(deck: string[]): string[] {
     // create copy of passed-in array
     const shuffled = [...deck];

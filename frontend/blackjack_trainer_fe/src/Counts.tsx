@@ -1,5 +1,4 @@
 import { calculateHandCount, extractCardRank, getRankValue } from "./HandCount";
-import { PlayerHands } from "./PlayerHands";
 
 interface DealerCountProps {
     dealerHand: string[];

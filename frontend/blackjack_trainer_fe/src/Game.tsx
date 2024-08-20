@@ -1,10 +1,10 @@
 import Actions from './Actions'
 import { useState } from "react"
-import { GameState } from "./GameLogic"
+import { GameState, WinnerState } from "./GameLogic"
 import { newPlayerHand } from './PlayerHands';
-import { DebugUI } from './DebugUI';
 import { DealerHandVisual } from './DealerHandVisual';
 import { PlayerHandsVisual } from './PlayerHandsVisual';
+import { WinnerVisual } from './WinnerVisual';
 
 function Game() {
     const [gameState, setGameState] = useState(GameState.Idle);
@@ -12,6 +12,7 @@ function Game() {
     const [dealerHand, setDealerHand] = useState([] as string[]);
     const [deck, setDeck] = useState([] as string[]);
     const [faceDown, setFaceDown] = useState(false);
+    const [winner, setWinner] = useState([] as WinnerState[]);
 
     return (
         <>
@@ -27,8 +28,9 @@ function Game() {
               deck={deck}
               deckSetter={setDeck}
               faceDownSetter={setFaceDown}
+              winnerSetter={setWinner}
             />
-            <DebugUI gameState={gameState} playerHands={playerHands}/>
+            <WinnerVisual winners={winner}/>
         </>
     )
 }

@@ -1,4 +1,4 @@
-import { drawCard, GameState } from "./GameLogic"
+import { drawCard, GameState, WinnerState } from "./GameLogic"
 import { uniqueCards } from "./Cards";
 import { shuffleDeck } from "./GameLogic";
 import { calculateHandCount, HandCount } from "./HandCount";
@@ -14,6 +14,7 @@ interface ActionProps {
     deck: string[];
     deckSetter: React.Dispatch<React.SetStateAction<string[]>>;
     faceDownSetter: React.Dispatch<React.SetStateAction<boolean>>;
+    winnerSetter: React.Dispatch<React.SetStateAction<WinnerState[]>>;
 }
 
 function Actions(props: ActionProps) {
@@ -42,7 +43,7 @@ function Actions(props: ActionProps) {
     )
 
     // ------------ Convenience functions ------------
-    function checkWinner(playerCount: HandCount, dealerCount: HandCount): void {
+    function checkWinner(playerCount: HandCount, dealerCount: HandCount): WinnerState {
         // figure out final hand count
         let truePlayerCount = 0;
         let trueDealerCount = 0;
@@ -62,23 +63,33 @@ function Actions(props: ActionProps) {
         // compare hands
         if (truePlayerCount > 21) {
             console.log("Dealer wins due to player bust!");
+            return WinnerState.DealerWinPlayerBust;
         } else if (trueDealerCount > 21) {
             console.log("Player wins due to dealer bust!");
+            return WinnerState.PlayerWinDealerBust;
         } else if (truePlayerCount > trueDealerCount) {
             console.log("Player wins!");
+            return WinnerState.PlayerWin;
         } else if (truePlayerCount < trueDealerCount) {
             console.log("Dealer wins!");
+            return WinnerState.DealerWin;
         } else {
             console.log("Push!");
+            return WinnerState.Push;
         }
     }
 
     function checkWinners(playerHands: PlayerHands, dealerCount: HandCount): void {
+        const winners: WinnerState[] = [];
+
         for (let i = 0; i < playerHands.numHands; i++) {
             console.log(`PLAYER HAND ${i}`);
             const playerCount = calculateHandCount(playerHands.hands[i]);
-            checkWinner(playerCount, dealerCount);
+            const winner = checkWinner(playerCount, dealerCount);
+            winners.push(winner);
         }
+
+        props.winnerSetter(winners);
     }
 
     function dealAnotherDealerCard(dealerCount: HandCount): boolean {
@@ -132,6 +143,7 @@ function Actions(props: ActionProps) {
         // reset player and dealer hands
         const newPlayerHands = newPlayerHand();
         const newDealerHand: string[] = [];
+        const resetWinners: WinnerState[] = [];
 
         // shuffle new deck
         const sortedDeck: string[] = [...uniqueCards];
@@ -149,6 +161,7 @@ function Actions(props: ActionProps) {
         props.deckSetter(shuffled);
         props.faceDownSetter(true);
         props.gameStateSetter(GameState.GetFirstChoice);
+        props.winnerSetter(resetWinners);
     }
 
     function HitHandler(): undefined {
