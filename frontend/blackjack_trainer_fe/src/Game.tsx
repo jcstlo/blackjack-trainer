@@ -1,9 +1,10 @@
 import Actions from './Actions'
-import { DealerHand, MultiplePlayerHands } from './Hands'
+import { MultiplePlayerHands } from './Hands'
 import { useState } from "react"
 import { GameState } from "./GameLogic"
 import { newPlayerHand } from './PlayerHands';
 import { DebugUI } from './DebugUI';
+import { DealerHandVisual } from './DealerHandVisual';
 
 function Game() {
     const [gameState, setGameState] = useState(GameState.Idle);
@@ -14,7 +15,7 @@ function Game() {
 
     return (
         <>
-            <DealerHand hand={dealerHand} faceDown={faceDown}/>
+            <DealerHandVisual hand={dealerHand} faceDown={faceDown}/>
             <MultiplePlayerHands pHands={playerHands}/>
             <Actions
               gameState={gameState}
