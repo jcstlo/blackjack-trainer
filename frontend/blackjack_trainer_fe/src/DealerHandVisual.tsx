@@ -11,12 +11,12 @@ export function DealerHandVisual(props: DealerHandVisualProps) {
 
     if (props.faceDown) {
         const first_card = getCardPath(props.hand[0]);
-        cards.push(<img src={first_card}/>);
-        cards.push(<img src="playing_cards/facedown.png"/>);
+        cards.push(<img src={first_card} className="drop-shadow-lg ml-1 mr-1"/>);
+        cards.push(<img src="playing_cards/facedown.png" className="drop-shadow-lg ml-1 mr-1"/>);
     } else {
         cards = props.hand.map((card: string) => {
             const img_path = getCardPath(card);
-            return <img src={img_path}/>;
+            return <img src={img_path} className="drop-shadow-lg ml-1 mr-1"/>;
         })
     }
 

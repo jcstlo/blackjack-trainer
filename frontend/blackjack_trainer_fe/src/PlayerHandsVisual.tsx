@@ -16,7 +16,7 @@ export function PlayerHandsVisual(props: PlayerHandsVisualProps) {
         const cards: JSX.Element[] = [];
         for (let j = 0; j < props.pHands.hands[i].length; j++) {
             const img_path = getCardPath(props.pHands.hands[i][j]);
-            cards.push(<img src={img_path}/>);
+            cards.push(<img src={img_path} className="drop-shadow-lg ml-1 mr-1"/>);
         }
         hand.push(<div className="flex justify-center">{cards}</div>);
         hands.push(<div className="mr-10 ml-10">{hand}</div>);
