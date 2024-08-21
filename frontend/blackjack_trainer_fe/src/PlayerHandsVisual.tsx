@@ -10,7 +10,11 @@ export function PlayerHandsVisual(props: PlayerHandsVisualProps) {
     const hands: JSX.Element[] = [];
     for (let i = 0; i < props.pHands.numHands; i++) {
         const hand: JSX.Element[] = [];
-        hand.push(<p className="text-center text-2xl">Player Hand {i+1}:</p>);
+        let playerHandTitleStyle = "text-center text-2xl";
+        if (props.pHands.focus === i) {
+            playerHandTitleStyle += " font-bold text-blue-600";
+        }
+        hand.push(<p className={playerHandTitleStyle}>Player Hand {i+1}:</p>);
         hand.push(<PlayerCount playerHand={props.pHands.hands[i]}/>);
 
         const cards: JSX.Element[] = [];

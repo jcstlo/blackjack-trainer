@@ -21,20 +21,20 @@ function Actions(props: ActionProps) {
     let buttons: JSX.Element;
     if (props.gameState === GameState.GetChoice) {
         buttons = (<>
-            <button className="ml-3 mr-3 border rounded border-black" onClick={HitHandler}>Hit</button>
-            <button className="ml-3 mr-3 border rounded border-black" onClick={StandHandler}>Stand</button>
-            <button className="ml-3 mr-3 border rounded border-black" onClick={SplitHandler}>Split</button>
+            <button className="ml-3 mr-3 rounded pl-4 pr-4 pt-2 pb-2 bg-blue-600 text-slate-100 font-bold drop-shadow-lg" onClick={HitHandler}>Hit</button>
+            <button className="ml-3 mr-3 rounded pl-4 pr-4 pt-2 pb-2 bg-blue-600 text-slate-100 font-bold drop-shadow-lg" onClick={StandHandler}>Stand</button>
+            <button className="ml-3 mr-3 rounded pl-4 pr-4 pt-2 pb-2 bg-blue-600 text-slate-100 font-bold drop-shadow-lg" onClick={SplitHandler}>Split</button>
         </>);
     } else if (props.gameState === GameState.GetFirstChoice) {
         buttons = (<>
-            <button className="ml-3 mr-3 border rounded border-black" onClick={HitHandler}>Hit</button>
-            <button className="ml-3 mr-3 border rounded border-black" onClick={StandHandler}>Stand</button>
-            <button className="ml-3 mr-3 border rounded border-black" onClick={SplitHandler}>Split</button>
-            <button className="ml-3 mr-3 border rounded border-black" onClick={DoubleHandler}>Double</button>
+            <button className="ml-3 mr-3 rounded pl-4 pr-4 pt-2 pb-2 bg-blue-600 text-slate-100 font-bold drop-shadow-lg" onClick={HitHandler}>Hit</button>
+            <button className="ml-3 mr-3 rounded pl-4 pr-4 pt-2 pb-2 bg-blue-600 text-slate-100 font-bold drop-shadow-lg" onClick={StandHandler}>Stand</button>
+            <button className="ml-3 mr-3 rounded pl-4 pr-4 pt-2 pb-2 bg-blue-600 text-slate-100 font-bold drop-shadow-lg" onClick={SplitHandler}>Split</button>
+            <button className="ml-3 mr-3 rounded pl-4 pr-4 pt-2 pb-2 bg-blue-600 text-slate-100 font-bold drop-shadow-lg" onClick={DoubleHandler}>Double</button>
         </>);
     } else {
         buttons = (<>
-            <button className="ml-3 mr-3 border rounded border-black" onClick={NewGameHandler}>New Game</button>
+            <button className="ml-3 mr-3 rounded pl-4 pr-4 pt-2 pb-2 bg-blue-600 text-slate-100 font-bold drop-shadow-lg" onClick={NewGameHandler}>New Game</button>
         </>);
     }
 
