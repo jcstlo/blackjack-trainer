@@ -32,7 +32,7 @@ export function DealerCount(props: DealerCountProps) {
 
 
     return (
-        <p>count = {trueDealerCount}</p>
+        <p className="text-center">count = {trueDealerCount}</p>
     )
 }
 
@@ -47,6 +47,6 @@ export function PlayerCount(props: PlayerCountProps) {
     }
 
     return (
-        <p>count = {truePlayerCount}</p>
+        <p className="text-center">count = {truePlayerCount}</p>
     )
 }

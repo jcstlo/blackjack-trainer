@@ -5,38 +5,38 @@ interface WinnerVisualProps {
 }
 
 export function WinnerVisual(props: WinnerVisualProps) {
-    const jsx = props.winners.map((state: WinnerState) => {
-        let text = "";
+    const jsx = props.winners.map((state: WinnerState, index: number) => {
+        let text = `Hand ${index+1}: `;
         switch (state) {
             case WinnerState.DealerWin: {
-                text = "Dealer wins!";
+                text += "Dealer wins!";
                 break;
             }
             case WinnerState.PlayerWin: {
-                text = "Player wins!";
+                text += "Player wins!";
                 break;
             }
             case WinnerState.Push: {
-                text = "Push!";
+                text += "Push!";
                 break;
             }
             case WinnerState.DealerWinPlayerBust: {
-                text = "Dealer wins due to player bust!";
+                text += "Dealer wins due to player bust!";
                 break;
             }
             case WinnerState.PlayerWinDealerBust: {
-                text = "Player wins due to dealer bust!";
+                text += "Player wins due to dealer bust!";
                 break;
             }
             default: {
-                text = "ERROR;"
+                text += "ERROR;"
                 break;
             }
         }
-        return (<p>{text}</p>)
+        return (<p className="text-center">{text}</p>)
     })
 
     return (
-        <>{jsx}</>
+        <div className="mt-6">{jsx}</div>
     )
 }
