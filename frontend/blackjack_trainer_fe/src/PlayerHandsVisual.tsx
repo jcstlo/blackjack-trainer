@@ -7,7 +7,7 @@ interface PlayerHandsVisualProps {
 }
 
 export function PlayerHandsVisual(props: PlayerHandsVisualProps) {
-    const hands: JSX.Element[] = [];
+    const hands: JSX.Element[] = []; // each element contains title, count, and cards
     for (let i = 0; i < props.pHands.numHands; i++) {
         const hand: JSX.Element[] = [];
         let playerHandTitleStyle = "text-center text-2xl";
