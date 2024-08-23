@@ -2,7 +2,8 @@ import { drawCard, GameState, WinnerState } from "./GameLogic"
 import { uniqueCards } from "./Cards";
 import { shuffleDeck, checkWinner, dealAnotherDealerCard, playersStillInGame } from "./GameLogic";
 import { calculateHandCount, HandCount } from "./HandCount";
-import { addCardToHand, clonePlayerHands, newPlayerHand, PlayerHands, splitHand } from "./PlayerHands";
+import { addCardToHand, clonePlayerHands, isSplitPossible, newPlayerHand, PlayerHands, splitHand } from "./PlayerHands";
+import { evaluateDecision } from "./Training";
 
 interface ActionProps {
     gameState: GameState;
@@ -108,6 +109,9 @@ function Actions(props: ActionProps) {
         const updatedPlayerHands = clonePlayerHands(props.playerHands);
         const updatedDeck = [...props.deck];
 
+        // evaluate decision
+        evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Hit");
+
         // deal card to player
         addCardToHand(updatedPlayerHands, drawCard(updatedDeck));
 
@@ -141,6 +145,9 @@ function Actions(props: ActionProps) {
     function StandHandler(): undefined {
         const updatedPlayerHands = clonePlayerHands(props.playerHands);
 
+        // evaluate decision
+        evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Stand");
+
         // move to next hand, or dealer's turn if all player hands are done
         if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
             dealDealerCards(updatedPlayerHands);
@@ -157,6 +164,11 @@ function Actions(props: ActionProps) {
     function SplitHandler(): undefined {
         const updatedPlayerHands = clonePlayerHands(props.playerHands);
 
+        // evaluate decision
+        if (isSplitPossible(updatedPlayerHands.hands[updatedPlayerHands.focus])) {
+            evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Split");
+        }
+
         if (!splitHand(updatedPlayerHands)) {
             console.log("Split is not possible with these cards!")
         }
@@ -168,6 +180,9 @@ function Actions(props: ActionProps) {
     function DoubleHandler(): undefined {
         const updatedPlayerHands = clonePlayerHands(props.playerHands);
         const updatedDeck = [...props.deck];
+
+        // evaluate decision
+        evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Double");
 
         // deal card to player
         addCardToHand(updatedPlayerHands, drawCard(updatedDeck));

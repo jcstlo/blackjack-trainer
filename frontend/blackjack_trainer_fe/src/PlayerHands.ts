@@ -6,7 +6,7 @@ export interface PlayerHands {
     numHands: number;
 }
 
-function isSplitPossible(hand: string[]): boolean {
+export function isSplitPossible(hand: string[]): boolean {
     if (hand.length !== 2) {
         return false;
     }
