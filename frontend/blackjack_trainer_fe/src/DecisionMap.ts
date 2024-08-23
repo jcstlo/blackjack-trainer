@@ -1,6 +1,6 @@
 const hardTotalDecisionMap: string[][] = [
 //    2    3    4    5    6    7    8    9   10    A    <-- Dealer upcard
-    ["S", "S", "S", "S", "S", "S", "S", "S", "S", "S"], // hardTotal = 17
+    ["S", "S", "S", "S", "S", "S", "S", "S", "S", "S"], // hardTotal = 17,18,19,20,21
     ["S", "S", "S", "S", "S", "H", "H", "H", "H", "H"], // hardTotal = 16
     ["S", "S", "S", "S", "S", "H", "H", "H", "H", "H"], // hardTotal = 15
     ["S", "S", "S", "S", "S", "H", "H", "H", "H", "H"], // hardTotal = 14
@@ -9,7 +9,7 @@ const hardTotalDecisionMap: string[][] = [
     ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"], // hardTotal = 11
     ["D", "D", "D", "D", "D", "D", "D", "D", "H", "H"], // hardTotal = 10
     ["H", "D", "D", "D", "D", "H", "H", "H", "H", "H"], // hardTotal = 9
-    ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H"], // hardTotal = 8
+    ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H"], // hardTotal = 8,7,6,5,4,3,2
 ];
 
 export const softTotalDecisionMap: string[][] = [
@@ -57,6 +57,9 @@ function getDealerUpCardColumn(dealerUpCard: string): number {
         case "8": return 6;
         case "9": return 7;
         case "10": return 8;
+        case "J": return 8;
+        case "Q": return 8;
+        case "K": return 8;
         case "A": return 9;
         default: return 0; // TODO: deal with error case
     }
@@ -77,6 +80,13 @@ export function getHardTotalDecision(hardTotal: number, dealerUpCard: string): s
         case 9: row = 8; break;
         case 8: row = 9; break;
         default: row = 0; break; // TODO: deal with error case
+    }
+
+    // deal with edge cases (not explicitly defined in basic strategy charts)
+    if (hardTotal > 17) {
+        row = 0;
+    } else if (hardTotal < 8) {
+        row = 9;
     }
 
     return hardTotalDecisionMap[row][col];
