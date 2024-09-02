@@ -1,5 +1,5 @@
 import { getHardTotalDecision, getPairSplitDecision, getSoftTotalDecision } from "./DecisionMap";
-import { Decision } from "./GameLogic";
+import { Decision, DecisionCount } from "./GameLogic";
 import { calculateHandCount, extractCardRank } from "./HandCount";
 import { isSplitPossible } from "./PlayerHands";
 
@@ -54,4 +54,15 @@ export function evaluateDecision(dealerUpCardUnformatted: string, playerHand: st
         correct: (playerDecision === correct)
     }
     return result;
+}
+
+export function evaluateDecisionCount(newDecision: Decision, currentDecisionCount: DecisionCount): DecisionCount {
+    const newDecisionCount = structuredClone(currentDecisionCount);
+
+    if (newDecision.correct) {
+        newDecisionCount.correctDecisionCount += 1;
+    }
+    newDecisionCount.totalDecisionCount += 1;
+
+    return newDecisionCount;
 }

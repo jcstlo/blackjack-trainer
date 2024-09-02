@@ -1,9 +1,9 @@
-import { Decision, drawCard, GameState, WinnerState } from "./GameLogic"
+import { Decision, DecisionCount, drawCard, GameState, WinnerState } from "./GameLogic"
 import { uniqueCards } from "./Cards";
 import { shuffleDeck, checkWinner, dealAnotherDealerCard, playersStillInGame } from "./GameLogic";
 import { calculateHandCount, HandCount } from "./HandCount";
 import { addCardToHand, clonePlayerHands, isSplitPossible, newPlayerHand, PlayerHands, splitHand } from "./PlayerHands";
-import { evaluateDecision } from "./Training";
+import { evaluateDecision, evaluateDecisionCount } from "./Training";
 
 interface ActionProps {
     gameState: GameState;
@@ -17,6 +17,8 @@ interface ActionProps {
     faceDownSetter: React.Dispatch<React.SetStateAction<boolean>>;
     winnerSetter: React.Dispatch<React.SetStateAction<WinnerState[]>>;
     decisionSetter: React.Dispatch<React.SetStateAction<Decision>>;
+    decisionCount: DecisionCount;
+    decisionCountSetter: React.Dispatch<React.SetStateAction<DecisionCount>>;
 }
 
 function Actions(props: ActionProps) {
@@ -97,7 +99,7 @@ function Actions(props: ActionProps) {
         addCardToHand(newPlayerHands, drawCard(shuffled));
         newDealerHand.push(drawCard(shuffled));
 
-        // reset decision state
+        // reset decision and decisionCount states
         const newDecision: Decision = {
             show: false,
             playerDecision: "",
@@ -121,6 +123,7 @@ function Actions(props: ActionProps) {
 
         // evaluate decision
         const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Hit");
+        const newDecisionCount = evaluateDecisionCount(newDecision, props.decisionCount);
 
         // deal card to player
         addCardToHand(updatedPlayerHands, drawCard(updatedDeck));
@@ -151,6 +154,7 @@ function Actions(props: ActionProps) {
         props.decisionSetter(newDecision);
         props.playerHandsSetter(updatedPlayerHands);
         props.deckSetter(updatedDeck);
+        props.decisionCountSetter(newDecisionCount);
     }
 
     function StandHandler(): undefined {
@@ -158,6 +162,7 @@ function Actions(props: ActionProps) {
 
         // evaluate decision
         const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Stand");
+        const newDecisionCount = evaluateDecisionCount(newDecision, props.decisionCount);
 
         // move to next hand, or dealer's turn if all player hands are done
         if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
@@ -171,6 +176,7 @@ function Actions(props: ActionProps) {
         // update state
         props.playerHandsSetter(updatedPlayerHands);
         props.decisionSetter(newDecision);
+        props.decisionCountSetter(newDecisionCount);
     }
 
     function SplitHandler(): undefined {
@@ -179,7 +185,9 @@ function Actions(props: ActionProps) {
         // evaluate decision
         if (isSplitPossible(updatedPlayerHands.hands[updatedPlayerHands.focus])) {
             const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Split");
+            const newDecisionCount = evaluateDecisionCount(newDecision, props.decisionCount);
             props.decisionSetter(newDecision);
+            props.decisionCountSetter(newDecisionCount);
         }
 
         if (!splitHand(updatedPlayerHands)) {
@@ -196,6 +204,7 @@ function Actions(props: ActionProps) {
 
         // evaluate decision
         const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Double");
+        const newDecisionCount = evaluateDecisionCount(newDecision, props.decisionCount);
 
         // deal card to player
         addCardToHand(updatedPlayerHands, drawCard(updatedDeck));
@@ -213,6 +222,7 @@ function Actions(props: ActionProps) {
         props.playerHandsSetter(updatedPlayerHands);
         props.deckSetter(updatedDeck);
         props.decisionSetter(newDecision);
+        props.decisionCountSetter(newDecisionCount);
     }
 }
 

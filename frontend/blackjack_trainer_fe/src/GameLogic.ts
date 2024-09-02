@@ -23,6 +23,11 @@ export interface Decision {
     correct: boolean;
 }
 
+export interface DecisionCount {
+    correctDecisionCount: number;
+    totalDecisionCount: number;
+}
+
 export function shuffleDeck(deck: string[]): string[] {
     // create copy of passed-in array
     const shuffled = [...deck];
