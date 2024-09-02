@@ -17,11 +17,11 @@ export const softTotalDecisionMap: string[][] = [
     ["S",  "S",  "S",  "S",  "S",  "S", "S", "S", "S", "S"], // softTotal = A,9
     ["S",  "S",  "S",  "S",  "DS", "S", "S", "S", "S", "S"], // softTotal = A,8
     ["DS", "DS", "DS", "DS", "DS", "S", "S", "H", "H", "H"], // softTotal = A,7
-    ["H",  "DH", "DH", "DH", "DH", "H", "H", "H", "H", "H"], // softTotal = A,6
-    ["H",  "H",  "DH", "DH", "DH", "H", "H", "H", "H", "H"], // softTotal = A,5
-    ["H",  "H",  "DH", "DH", "DH", "H", "H", "H", "H", "H"], // softTotal = A,4
-    ["H",  "H",  "H",  "DH", "DH", "H", "H", "H", "H", "H"], // softTotal = A,3
-    ["H",  "H",  "H",  "DH", "DH", "H", "H", "H", "H", "H"], // softTotal = A,2
+    ["H",  "D",  "D",  "D",  "D",  "H", "H", "H", "H", "H"], // softTotal = A,6
+    ["H",  "H",  "D",  "D",  "D",  "H", "H", "H", "H", "H"], // softTotal = A,5
+    ["H",  "H",  "D",  "D",  "D",  "H", "H", "H", "H", "H"], // softTotal = A,4
+    ["H",  "H",  "H",  "D",  "D",  "H", "H", "H", "H", "H"], // softTotal = A,3
+    ["H",  "H",  "H",  "D",  "D",  "H", "H", "H", "H", "H"], // softTotal = A,2
 ];
 
 export const pairSplitDecisionMap: string[][] = [
