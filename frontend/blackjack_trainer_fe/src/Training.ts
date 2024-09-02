@@ -1,4 +1,5 @@
 import { getHardTotalDecision, getPairSplitDecision, getSoftTotalDecision } from "./DecisionMap";
+import { Decision } from "./GameLogic";
 import { calculateHandCount, extractCardRank } from "./HandCount";
 import { isSplitPossible } from "./PlayerHands";
 
@@ -10,16 +11,26 @@ export interface TrainingData {
     correct: boolean;
 }
 
-// TODO
-export function evaluateDecision(dealerUpCardUnformatted: string, playerHand: string[], playerDecision: string) {
-    // TODO: create new TrainingData object
-    // TODO: return the TrainingData object
+function translateCorrectDecision(decision: string): string {
+    // TODO: need to remove everything other than Hit, Stand, Double, Split
+    switch (decision) {
+        case "H": return "Hit";
+        case "S": return "Stand";
+        case "D": return "Double";
+        case "DS": return "Double/Stand";
+        case "N": return "Don't Split";
+        case "Y": return "Split";
+        case "YN": return "Split only if DAS is offered";
+        default: return "INVALID";
+    }
+}
+
+export function evaluateDecision(dealerUpCardUnformatted: string, playerHand: string[], playerDecision: string): Decision {
     let correct: string = "";
     const playerCount = calculateHandCount(playerHand);
     const dealerUpCard = extractCardRank(dealerUpCardUnformatted);
 
     if (isSplitPossible(playerHand)) {
-        console.log("Split map")
         // use pair split decision map
         const splitCard = extractCardRank(playerHand[0]);
         if (["10", "J", "Q", "K"].includes(splitCard)) {
@@ -28,15 +39,19 @@ export function evaluateDecision(dealerUpCardUnformatted: string, playerHand: st
             correct = getPairSplitDecision(splitCard, dealerUpCard);
         }
     } else if (playerCount.softCount > playerCount.hardCount && playerCount.softCount <= 21) {
-        console.log("soft count map")
         // use soft count decision map
         correct = getSoftTotalDecision(playerCount.softCount-11, dealerUpCard);
     } else if (playerCount.hardCount <= 21) {
-        console.log("Hard count map")
         // use hard count decision map
         correct = getHardTotalDecision(playerCount.hardCount, dealerUpCard);
     }
+    correct = translateCorrectDecision(correct);
 
-    console.log(`You chose: ${playerDecision}`);
-    console.log(`Correct play was: ${correct}`);
+    const result: Decision = {
+        show: true,
+        playerDecision: playerDecision,
+        correctDecision: correct,
+        correct: (playerDecision === correct)
+    }
+    return result;
 }

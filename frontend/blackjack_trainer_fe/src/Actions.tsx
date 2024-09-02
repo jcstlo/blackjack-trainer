@@ -1,4 +1,4 @@
-import { drawCard, GameState, WinnerState } from "./GameLogic"
+import { Decision, drawCard, GameState, WinnerState } from "./GameLogic"
 import { uniqueCards } from "./Cards";
 import { shuffleDeck, checkWinner, dealAnotherDealerCard, playersStillInGame } from "./GameLogic";
 import { calculateHandCount, HandCount } from "./HandCount";
@@ -16,6 +16,7 @@ interface ActionProps {
     deckSetter: React.Dispatch<React.SetStateAction<string[]>>;
     faceDownSetter: React.Dispatch<React.SetStateAction<boolean>>;
     winnerSetter: React.Dispatch<React.SetStateAction<WinnerState[]>>;
+    decisionSetter: React.Dispatch<React.SetStateAction<Decision>>;
 }
 
 function Actions(props: ActionProps) {
@@ -96,6 +97,14 @@ function Actions(props: ActionProps) {
         addCardToHand(newPlayerHands, drawCard(shuffled));
         newDealerHand.push(drawCard(shuffled));
 
+        // reset decision state
+        const newDecision: Decision = {
+            show: false,
+            playerDecision: "",
+            correctDecision: "",
+            correct: false
+        }
+
         // update state
         props.playerHandsSetter(newPlayerHands);
         props.dealerHandSetter(newDealerHand);
@@ -103,6 +112,7 @@ function Actions(props: ActionProps) {
         props.faceDownSetter(true);
         props.gameStateSetter(GameState.GetFirstChoice);
         props.winnerSetter(resetWinners);
+        props.decisionSetter(newDecision);
     }
 
     function HitHandler(): undefined {
@@ -110,7 +120,7 @@ function Actions(props: ActionProps) {
         const updatedDeck = [...props.deck];
 
         // evaluate decision
-        evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Hit");
+        const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Hit");
 
         // deal card to player
         addCardToHand(updatedPlayerHands, drawCard(updatedDeck));
@@ -138,6 +148,7 @@ function Actions(props: ActionProps) {
         }
 
         // update state
+        props.decisionSetter(newDecision);
         props.playerHandsSetter(updatedPlayerHands);
         props.deckSetter(updatedDeck);
     }
@@ -146,7 +157,7 @@ function Actions(props: ActionProps) {
         const updatedPlayerHands = clonePlayerHands(props.playerHands);
 
         // evaluate decision
-        evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Stand");
+        const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Stand");
 
         // move to next hand, or dealer's turn if all player hands are done
         if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
@@ -159,6 +170,7 @@ function Actions(props: ActionProps) {
 
         // update state
         props.playerHandsSetter(updatedPlayerHands);
+        props.decisionSetter(newDecision);
     }
 
     function SplitHandler(): undefined {
@@ -166,7 +178,8 @@ function Actions(props: ActionProps) {
 
         // evaluate decision
         if (isSplitPossible(updatedPlayerHands.hands[updatedPlayerHands.focus])) {
-            evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Split");
+            const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Split");
+            props.decisionSetter(newDecision);
         }
 
         if (!splitHand(updatedPlayerHands)) {
@@ -182,7 +195,7 @@ function Actions(props: ActionProps) {
         const updatedDeck = [...props.deck];
 
         // evaluate decision
-        evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Double");
+        const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Double");
 
         // deal card to player
         addCardToHand(updatedPlayerHands, drawCard(updatedDeck));
@@ -199,6 +212,7 @@ function Actions(props: ActionProps) {
         // update state
         props.playerHandsSetter(updatedPlayerHands);
         props.deckSetter(updatedDeck);
+        props.decisionSetter(newDecision);
     }
 }
 
