@@ -22,6 +22,7 @@ export const softTotalDecisionMap: string[][] = [
     ["H",  "H",  "D",  "D",  "D",  "H", "H", "H", "H", "H"], // softTotal = A,4
     ["H",  "H",  "H",  "D",  "D",  "H", "H", "H", "H", "H"], // softTotal = A,3
     ["H",  "H",  "H",  "D",  "D",  "H", "H", "H", "H", "H"], // softTotal = A,2
+    ["D",  "D",  "D",  "D",  "D",  "D", "D", "D", "D", "D"], // softTotal = A (after splitting a pair of aces)
 ];
 
 export const pairSplitDecisionMap: string[][] = [
@@ -104,6 +105,7 @@ export function getSoftTotalDecision(playerNonAceTotal: number, dealerUpCard: st
         case 4: row = 5; break;
         case 3: row = 6; break;
         case 2: row = 7; break;
+        case 0: row = 8; break;
         default: row = 0; break; // TODO: deal with error case
     }
 
