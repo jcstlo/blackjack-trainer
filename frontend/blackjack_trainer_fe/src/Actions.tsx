@@ -122,7 +122,7 @@ function Actions(props: ActionProps) {
         const updatedDeck = [...props.deck];
 
         // evaluate decision
-        const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Hit");
+        const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Hit", props.gameState);
         const newDecisionCount = evaluateDecisionCount(newDecision, props.decisionCount);
 
         // deal card to player
@@ -161,7 +161,7 @@ function Actions(props: ActionProps) {
         const updatedPlayerHands = clonePlayerHands(props.playerHands);
 
         // evaluate decision
-        const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Stand");
+        const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Stand", props.gameState);
         const newDecisionCount = evaluateDecisionCount(newDecision, props.decisionCount);
 
         // move to next hand, or dealer's turn if all player hands are done
@@ -184,7 +184,7 @@ function Actions(props: ActionProps) {
 
         // evaluate decision
         if (isSplitPossible(updatedPlayerHands.hands[updatedPlayerHands.focus])) {
-            const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Split");
+            const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Split", props.gameState);
             const newDecisionCount = evaluateDecisionCount(newDecision, props.decisionCount);
             props.decisionSetter(newDecision);
             props.decisionCountSetter(newDecisionCount);
@@ -203,7 +203,7 @@ function Actions(props: ActionProps) {
         const updatedDeck = [...props.deck];
 
         // evaluate decision
-        const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Double");
+        const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Double", props.gameState);
         const newDecisionCount = evaluateDecisionCount(newDecision, props.decisionCount);
 
         // deal card to player

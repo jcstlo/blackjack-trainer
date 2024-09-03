@@ -1,5 +1,5 @@
 import { getHardTotalDecision, getPairSplitDecision, getSoftTotalDecision } from "./DecisionMap";
-import { Decision, DecisionCount } from "./GameLogic";
+import { Decision, DecisionCount, GameState } from "./GameLogic";
 import { calculateHandCount, extractCardRank } from "./HandCount";
 import { isSplitPossible } from "./PlayerHands";
 
@@ -11,12 +11,26 @@ export interface TrainingData {
     correct: boolean;
 }
 
-function translateCorrectDecision(decision: string): string {
+function translateCorrectDecision(decision: string, gameState: GameState): string {
     switch (decision) {
         case "H": return "Hit";
         case "S": return "Stand";
-        case "D": return "Double";
-        case "DS": return "Double"; // TODO: make this toggleable to Double or Stand
+        case "D": {
+            console.log("Went into Double/Hit!")
+            if (gameState === GameState.GetFirstChoice) {
+                return "Double";
+            } else {
+                return "Hit";
+            }
+        }
+        case "DS": {
+            console.log("Went into Double/Stand!")
+            if (gameState === GameState.GetFirstChoice) {
+                return "Double";
+            } else {
+                return "Stand";
+            }
+        }
         // case "N": return "Don't Split";
         case "Y": return "Split";
         // case "YN": return "Split only if DAS is offered";
@@ -24,7 +38,7 @@ function translateCorrectDecision(decision: string): string {
     }
 }
 
-export function evaluateDecision(dealerUpCardUnformatted: string, playerHand: string[], playerDecision: string): Decision {
+export function evaluateDecision(dealerUpCardUnformatted: string, playerHand: string[], playerDecision: string, gameState: GameState): Decision {
     // ASSUMPTIONS:
     //   for YN: DAS IS NOT OFFERED
     //   for DS: DOUBLE IS ALLOWED
@@ -53,7 +67,7 @@ export function evaluateDecision(dealerUpCardUnformatted: string, playerHand: st
         }
     }
 
-    correct = translateCorrectDecision(correct);
+    correct = translateCorrectDecision(correct, gameState);
 
     const result: Decision = {
         show: true,
