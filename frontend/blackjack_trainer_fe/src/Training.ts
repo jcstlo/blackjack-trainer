@@ -44,6 +44,7 @@ export function evaluateDecision(dealerUpCardUnformatted: string, playerHand: st
     //   for DS: DOUBLE IS ALLOWED
 
     let correct: string = "";
+    let actionContextPlayerHand: string = "";
     const playerCount = calculateHandCount(playerHand);
     const dealerUpCard = extractCardRank(dealerUpCardUnformatted);
 
@@ -55,25 +56,40 @@ export function evaluateDecision(dealerUpCardUnformatted: string, playerHand: st
         } else {
             correct = getPairSplitDecision(splitCard, dealerUpCard);
         }
+        actionContextPlayerHand = `${splitCard},${splitCard}`;
     }
 
     if (!isSplitPossible(playerHand) || correct !== "Y") { // if the correct play is to NOT split, then use soft/hard decision map
         if (playerCount.softCount > playerCount.hardCount && playerCount.softCount <= 21) {
             // use soft count decision map
             correct = getSoftTotalDecision(playerCount.softCount-11, dealerUpCard);
+            if (actionContextPlayerHand === "") {
+                actionContextPlayerHand = `S${playerCount.softCount}`;
+            }
         } else if (playerCount.hardCount <= 21) {
             // use hard count decision map
             correct = getHardTotalDecision(playerCount.hardCount, dealerUpCard);
+            if (actionContextPlayerHand === "") {
+                actionContextPlayerHand = `${playerCount.hardCount}`;
+            }
         }
     }
 
     correct = translateCorrectDecision(correct, gameState);
 
+    let actionContextDealerUpcard = "";
+    if (["J", "Q", "K"].includes(dealerUpCard)) {
+        actionContextDealerUpcard = "10";
+    } else {
+        actionContextDealerUpcard = dealerUpCard;
+    }
+
     const result: Decision = {
         show: true,
         playerDecision: playerDecision,
         correctDecision: correct,
-        correct: (playerDecision === correct)
+        correct: (playerDecision === correct),
+        actionContext: `${actionContextPlayerHand} against ${actionContextDealerUpcard}`
     }
     return result;
 }

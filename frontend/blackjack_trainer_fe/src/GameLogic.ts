@@ -21,6 +21,7 @@ export interface Decision {
     playerDecision: string;
     correctDecision: string;
     correct: boolean;
+    actionContext: string;
 }
 
 export interface DecisionCount {

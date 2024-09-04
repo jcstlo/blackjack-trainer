@@ -19,6 +19,8 @@ interface ActionProps {
     decisionSetter: React.Dispatch<React.SetStateAction<Decision>>;
     decisionCount: DecisionCount;
     decisionCountSetter: React.Dispatch<React.SetStateAction<DecisionCount>>;
+    incorrectActions: string[];
+    incorrectActionsSetter: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 function Actions(props: ActionProps) {
@@ -82,6 +84,20 @@ function Actions(props: ActionProps) {
         props.deckSetter(updatedDeck);
     }
 
+    function addIncorrectAction(decision: Decision) {
+        if (decision.correct) {
+            return;
+        }
+        const s = `${decision.actionContext} - You should ${decision.correctDecision}`
+
+        const newIncorrectActions = [...props.incorrectActions];
+        if (newIncorrectActions.length >= 10) {
+            newIncorrectActions.splice(-1, 1);
+        }
+        newIncorrectActions.splice(0, 0, s);
+        props.incorrectActionsSetter(newIncorrectActions);
+    }
+
     // ------------ Handlers ------------
     function NewGameHandler(): undefined {
         // reset player and dealer hands
@@ -104,7 +120,8 @@ function Actions(props: ActionProps) {
             show: false,
             playerDecision: "",
             correctDecision: "",
-            correct: false
+            correct: false,
+            actionContext: ""
         }
 
         // update state
@@ -124,6 +141,7 @@ function Actions(props: ActionProps) {
         // evaluate decision
         const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Hit", props.gameState);
         const newDecisionCount = evaluateDecisionCount(newDecision, props.decisionCount);
+        addIncorrectAction(newDecision);
 
         // deal card to player
         addCardToHand(updatedPlayerHands, drawCard(updatedDeck));
@@ -163,6 +181,7 @@ function Actions(props: ActionProps) {
         // evaluate decision
         const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Stand", props.gameState);
         const newDecisionCount = evaluateDecisionCount(newDecision, props.decisionCount);
+        addIncorrectAction(newDecision);
 
         // move to next hand, or dealer's turn if all player hands are done
         if (updatedPlayerHands.focus === updatedPlayerHands.numHands-1) {
@@ -188,6 +207,7 @@ function Actions(props: ActionProps) {
             const newDecisionCount = evaluateDecisionCount(newDecision, props.decisionCount);
             props.decisionSetter(newDecision);
             props.decisionCountSetter(newDecisionCount);
+            addIncorrectAction(newDecision);
         }
 
         if (!splitHand(updatedPlayerHands)) {
@@ -205,6 +225,7 @@ function Actions(props: ActionProps) {
         // evaluate decision
         const newDecision = evaluateDecision(props.dealerHand[0], props.playerHands.hands[props.playerHands.focus], "Double", props.gameState);
         const newDecisionCount = evaluateDecisionCount(newDecision, props.decisionCount);
+        addIncorrectAction(newDecision);
 
         // deal card to player
         addCardToHand(updatedPlayerHands, drawCard(updatedDeck));

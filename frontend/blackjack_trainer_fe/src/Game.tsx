@@ -7,6 +7,7 @@ import { PlayerHandsVisual } from './PlayerHandsVisual';
 import { WinnerVisual } from './WinnerVisual';
 import { CorrectPlayVisual } from './CorrectPlayVisual';
 import { DecisionCountVisual } from './DecisionCountVisual';
+import { IncorrectActionsSidebar } from './IncorrectActionsVisual';
 
 function Game() {
     const [gameState, setGameState] = useState(GameState.Idle);
@@ -15,6 +16,7 @@ function Game() {
     const [deck, setDeck] = useState([] as string[]);
     const [faceDown, setFaceDown] = useState(false);
     const [winner, setWinner] = useState([] as WinnerState[]);
+    const [incorrectActions, setIncorrectActions] = useState([] as string[]);
 
     const newDecision: Decision = {
         show: false,
@@ -47,6 +49,8 @@ function Game() {
               decisionSetter={setDecision}
               decisionCount={decisionCount}
               decisionCountSetter={setDecisionCount}
+              incorrectActions={incorrectActions}
+              incorrectActionsSetter={setIncorrectActions}
             />
             <WinnerVisual winners={winner}/>
             <CorrectPlayVisual
@@ -58,6 +62,9 @@ function Game() {
             <DecisionCountVisual
               correctDecisionCount={decisionCount.correctDecisionCount}
               totalDecisionCount={decisionCount.totalDecisionCount}
+            />
+            <IncorrectActionsSidebar
+              incorrectActions={incorrectActions}
             />
         </>
     )
