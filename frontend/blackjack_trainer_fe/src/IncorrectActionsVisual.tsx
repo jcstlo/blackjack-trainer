@@ -17,16 +17,18 @@ export function IncorrectActionsSidebar(props: IncorrectActionsProps) {
     })
 
     const drawerList = (
-        <Box sx={{ width: 325 }} role="presentation" onClick={toggleDrawer(false)}>
+        <Box sx={{ width: 350 }} role="presentation" onClick={toggleDrawer(false)}>
             <List>
                 {drawerListItems}
             </List>
         </Box>
     )
 
+    const toggleButton = <Button onClick={toggleDrawer(true)}>Show last 10 incorrect actions</Button>;
+
     return (
         <div className="flex justify-center mt-6">
-            <Button onClick={toggleDrawer(true)}>Show last 10 incorrect actions</Button>
+            { props.incorrectActions.length > 0 ? toggleButton : "" }
             <Drawer open={open} onClose={toggleDrawer(false)}>
                 {drawerList}
             </Drawer>

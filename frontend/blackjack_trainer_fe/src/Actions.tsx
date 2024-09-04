@@ -88,7 +88,7 @@ function Actions(props: ActionProps) {
         if (decision.correct) {
             return;
         }
-        const s = `${decision.actionContext} - You should ${decision.correctDecision}`
+        const s = `${decision.playerDecision} on ${decision.actionContext} - You should ${decision.correctDecision}`
 
         const newIncorrectActions = [...props.incorrectActions];
         if (newIncorrectActions.length >= 10) {
