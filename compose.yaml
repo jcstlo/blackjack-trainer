@@ -1,0 +1,7 @@
+services:
+  # nginx frontend web server
+  frontend:
+    build:
+      context: ./frontend/blackjack_trainer_fe/
+    ports:
+      - "80:80"
