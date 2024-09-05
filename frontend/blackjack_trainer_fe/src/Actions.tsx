@@ -24,29 +24,33 @@ interface ActionProps {
 }
 
 function Actions(props: ActionProps) {
-    let buttons: JSX.Element;
+    const buttonsArray: JSX.Element[] = [];
     const buttonStyle = "ml-3 mr-3 rounded pl-4 pr-4 pt-2 pb-2 bg-blue-600 text-slate-100 font-bold drop-shadow-lg";
-    if (props.gameState === GameState.GetChoice) {
-        buttons = (<>
-            <button className={buttonStyle} onClick={HitHandler}>Hit</button>
-            <button className={buttonStyle} onClick={StandHandler}>Stand</button>
-            <button className={buttonStyle} onClick={SplitHandler}>Split</button>
-        </>);
-    } else if (props.gameState === GameState.GetFirstChoice) {
-        buttons = (<>
-            <button className={buttonStyle} onClick={HitHandler}>Hit</button>
-            <button className={buttonStyle} onClick={StandHandler}>Stand</button>
-            <button className={buttonStyle} onClick={SplitHandler}>Split</button>
-            <button className={buttonStyle} onClick={DoubleHandler}>Double</button>
-        </>);
+
+    const HitButton = <button className={buttonStyle} onClick={HitHandler}>Hit</button>;
+    const StandButton = <button className={buttonStyle} onClick={StandHandler}>Stand</button>;
+    const SplitButton = <button className={buttonStyle} onClick={SplitHandler}>Split</button>;
+    const DoubleButton = <button className={buttonStyle} onClick={DoubleHandler}>Double</button>;
+    const NewGameButton = <button className={buttonStyle} onClick={NewGameHandler}>New Game</button>;
+
+    if (props.gameState === GameState.Idle) {
+        buttonsArray.push(NewGameButton);
     } else {
-        buttons = (<>
-            <button className={buttonStyle} onClick={NewGameHandler}>New Game</button>
-        </>);
+        buttonsArray.push(HitButton);
+        buttonsArray.push(StandButton);
+
+        if (props.gameState === GameState.GetFirstChoice) {
+            buttonsArray.push(DoubleButton);
+        }
+
+        const currentPlayerHand = props.playerHands.hands[props.playerHands.focus];
+        if (isSplitPossible(currentPlayerHand)) {
+            buttonsArray.push(SplitButton);
+        }
     }
 
     return (
-        <div className="flex justify-center">{buttons}</div>
+        <div className="flex justify-center">{buttonsArray}</div>
     )
 
     // ------------ Convenience functions ------------
