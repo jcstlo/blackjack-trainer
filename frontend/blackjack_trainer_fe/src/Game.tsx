@@ -22,7 +22,8 @@ function Game() {
         show: false,
         playerDecision: "",
         correctDecision: "",
-        correct: false
+        correct: false,
+        actionContext: ""
     };
     const newDecisionCount: DecisionCount = {
         correctDecisionCount: 0,
@@ -58,6 +59,7 @@ function Game() {
               playerDecision={decision.playerDecision}
               correctDecision={decision.correctDecision}
               correct={decision.correct}
+              actionContext={decision.actionContext}
             />
             <DecisionCountVisual
               correctDecisionCount={decisionCount.correctDecisionCount}
