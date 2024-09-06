@@ -4,4 +4,18 @@ services:
     build:
       context: ./frontend/blackjack_trainer_fe/
     ports:
-      - "80:80"
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      # volume for certbot and frontend to communicate with each other
+      - ./certbot/www/:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+  # certbot for https auth
+    certbot:
+      image: certbot/certbot:latest
+      volumes:
+        # volume for certbot and frontend to communicate with each other
+        - ./certbot/www/:/var/www/certbot/:rw
+        - ./certbot/conf/:/etc/letsencrypt/:rw
