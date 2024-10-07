@@ -8,6 +8,7 @@ import { WinnerVisual } from './WinnerVisual';
 import { CorrectPlayVisual } from './CorrectPlayVisual';
 import { DecisionCountVisual } from './DecisionCountVisual';
 import { IncorrectActionsSidebar } from './IncorrectActionsVisual';
+import { Header } from './Header';
 
 function Game() {
     const [gameState, setGameState] = useState(GameState.Idle);
@@ -34,6 +35,7 @@ function Game() {
 
     return (
         <>
+            <Header/>
             <DealerHandVisual hand={dealerHand} faceDown={faceDown}/>
             <PlayerHandsVisual pHands={playerHands}/>
             <Actions
