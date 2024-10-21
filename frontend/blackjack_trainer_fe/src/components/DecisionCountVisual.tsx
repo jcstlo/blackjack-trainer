@@ -1,4 +1,4 @@
-import { DecisionCount } from "./GameLogic";
+import { DecisionCount } from "../game-logic/GameLogic";
 
 export function DecisionCountVisual(props: DecisionCount) {
     const correctDecisionString = `Correct decisions: ${props.correctDecisionCount}`;

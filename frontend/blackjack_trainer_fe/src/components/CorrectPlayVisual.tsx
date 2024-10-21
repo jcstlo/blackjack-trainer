@@ -1,4 +1,4 @@
-import { Decision } from "./GameLogic";
+import { Decision } from "../game-logic/GameLogic";
 
 export function CorrectPlayVisual(props: Decision) {
     let tailwindStyle = "mt-6 text-center font-bold";

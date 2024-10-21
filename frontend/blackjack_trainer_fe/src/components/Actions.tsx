@@ -1,9 +1,9 @@
-import { Decision, DecisionCount, drawCard, GameState, WinnerState } from "./GameLogic"
-import { uniqueCards } from "./Cards";
-import { shuffleDeck, checkWinner, dealAnotherDealerCard, playersStillInGame } from "./GameLogic";
-import { calculateHandCount, HandCount } from "./HandCount";
-import { addCardToHand, clonePlayerHands, isSplitPossible, newPlayerHand, PlayerHands, splitHand } from "./PlayerHands";
-import { evaluateDecision, evaluateDecisionCount } from "./Training";
+import { Decision, DecisionCount, drawCard, GameState, WinnerState } from "../game-logic/GameLogic";
+import { uniqueCards } from "../game-logic/Cards";
+import { shuffleDeck, checkWinner, dealAnotherDealerCard, playersStillInGame } from "../game-logic/GameLogic";
+import { calculateHandCount, HandCount } from "../game-logic/HandCount";
+import { addCardToHand, clonePlayerHands, isSplitPossible, newPlayerHand, PlayerHands, splitHand } from "../game-logic/PlayerHands";
+import { evaluateDecision, evaluateDecisionCount } from "../game-logic/Training";
 
 interface ActionProps {
     gameState: GameState;

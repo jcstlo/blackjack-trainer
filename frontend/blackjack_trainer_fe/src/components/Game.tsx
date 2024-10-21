@@ -1,7 +1,7 @@
 import Actions from './Actions'
 import { useState } from "react"
-import { Decision, DecisionCount, GameState, WinnerState } from "./GameLogic"
-import { newPlayerHand } from './PlayerHands';
+import { Decision, DecisionCount, GameState, WinnerState } from '../game-logic/GameLogic';
+import { newPlayerHand } from '../game-logic/PlayerHands';
 import { DealerHandVisual } from './DealerHandVisual';
 import { PlayerHandsVisual } from './PlayerHandsVisual';
 import { WinnerVisual } from './WinnerVisual';

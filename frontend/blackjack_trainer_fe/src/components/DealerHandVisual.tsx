@@ -1,5 +1,5 @@
 import { DealerCount } from "./Counts";
-import { getCardPath } from "./GameLogic";
+import { getCardPath } from "../game-logic/GameLogic";
 
 interface DealerHandVisualProps {
     hand: string[];

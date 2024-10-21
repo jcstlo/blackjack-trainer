@@ -1,4 +1,4 @@
-import { WinnerState } from "./GameLogic"
+import { WinnerState } from "../game-logic/GameLogic";
 
 interface WinnerVisualProps {
     winners: WinnerState[];

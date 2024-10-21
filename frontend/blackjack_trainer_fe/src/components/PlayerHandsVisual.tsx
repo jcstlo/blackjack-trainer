@@ -1,6 +1,6 @@
 import { PlayerCount } from "./Counts";
-import { getCardPath } from "./GameLogic";
-import { PlayerHands } from "./PlayerHands";
+import { getCardPath } from "../game-logic/GameLogic";
+import { PlayerHands } from "../game-logic/PlayerHands";
 
 interface PlayerHandsVisualProps {
     pHands: PlayerHands;

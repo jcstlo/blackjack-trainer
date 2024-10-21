@@ -1,4 +1,4 @@
-import { PlayerHands } from "./PlayerHands";
+import { PlayerHands } from "../game-logic/PlayerHands";
 
 interface DealerHandProps {
     hand: string[];

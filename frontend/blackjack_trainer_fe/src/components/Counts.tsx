@@ -1,4 +1,4 @@
-import { calculateHandCount, extractCardRank, getRankValue } from "./HandCount";
+import { calculateHandCount, extractCardRank, getRankValue } from "../game-logic/HandCount";
 
 interface DealerCountProps {
     dealerHand: string[];
